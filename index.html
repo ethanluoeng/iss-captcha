@@ -1,0 +1,119 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>ISS captcha</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inconsolata:wght@400;700&display=swap" rel="stylesheet">
+<style>
+:root{--navy0:#0b1520;--navy1:#12263a;--line:#1f4566;--mid:#477ca8;--mid2:#5597d4;--sky:#63aff2;--soft:#9cc6ea;--gap:4px;--ease:cubic-bezier(.4,0,.2,1);--mono:Inconsolata,Consolas,"SF Mono",Menlo,monospace}
+*{box-sizing:border-box;margin:0}
+body{min-height:100vh;display:grid;place-items:center;background:#060d14;font-family:var(--mono);color:#fff;padding:16px}
+.cap{width:min(100%,408px);background:var(--navy0);border:1px solid var(--line);border-radius:12px;padding:8px;user-select:none;-webkit-user-select:none}
+.head{position:relative;border-radius:8px;padding:18px 20px 18px 24px;overflow:hidden;background-color:var(--navy1);background-image:linear-gradient(rgba(31,69,102,.55) .6px,transparent .6px),linear-gradient(90deg,rgba(31,69,102,.55) .6px,transparent .6px);background-size:16px 16px}
+.head::before{content:"";position:absolute;left:0;top:0;bottom:0;width:4px;background:var(--sky);border-radius:2px}
+.head small{display:block;font-size:14px;color:var(--sky)}
+.head small.dim{color:var(--soft)}
+.head strong{display:block;font-size:30px;font-weight:700;line-height:1.25;margin:6px 0 4px}
+.cur{color:var(--sky);animation:blink 1.1s steps(2) infinite}
+@keyframes blink{50%{opacity:0}}
+.grid{display:grid;grid-template-columns:repeat(3,1fr);gap:var(--gap);margin-top:8px}
+.tile{position:relative;aspect-ratio:1;border:0;padding:0;background:transparent;cursor:pointer;-webkit-tap-highlight-color:transparent;border-radius:6px}
+.tile:focus-visible{outline:2px solid var(--sky);outline-offset:2px}
+.clip{position:absolute;inset:0;overflow:hidden;border-radius:6px;transition:transform .42s var(--ease)}
+.clip::after{content:"";position:absolute;inset:0;border-radius:6px;box-shadow:inset 0 0 0 2px var(--sky);opacity:0;transition:opacity .42s var(--ease)}
+.tile.on .clip{transform:scale(.82)}
+.tile.on .clip::after{opacity:1}
+.clip img{position:absolute;width:calc(300% + 2*var(--gap));height:calc(200% + var(--gap));left:calc(var(--c)*(-100% - var(--gap)));top:calc(var(--r)*(-100% - var(--gap)));object-fit:cover;pointer-events:none;max-width:none}
+.chk{position:absolute;top:4px;left:4px;width:22px;height:22px;border-radius:5px;background:var(--sky);display:grid;place-items:center;transform:scale(0);transition:transform .42s var(--ease)}
+.tile.on .chk{transform:scale(1)}
+.foot{display:flex;align-items:center;gap:8px;margin-top:10px;padding:3px 0 3px 2px}
+.ico{width:32px;height:32px;border:1px solid var(--line);background:none;border-radius:7px;display:grid;place-items:center;cursor:pointer;color:var(--mid);font:700 17px var(--mono);transition:border-color .2s,color .2s}
+.ico:hover{border-color:var(--mid);color:var(--sky)}
+.msg{flex:1;font-size:13px;color:var(--soft);text-align:center;opacity:0;transition:opacity .3s}
+.msg.show{opacity:1}
+.go{border:0;background:var(--mid);color:#fff;font:700 16px var(--mono);letter-spacing:1px;height:36px;padding:0 20px;border-radius:8px;cursor:pointer;min-width:104px;transition:background .2s}
+.go:hover{background:var(--mid2)}
+.head small.dim{transition:color .3s}
+.cap.good .head small.dim{color:var(--sky)}
+.cap.bad{--sky:#ff6b81;animation:shake .45s cubic-bezier(.36,.07,.19,.97)}
+.cap.bad .head small.dim{color:#ff6b81}
+@keyframes shake{20%,60%{transform:translateX(-5px)}40%,80%{transform:translateX(5px)}}
+</style>
+</head>
+<body>
+<div class="cap" role="group" aria-label="ISS captcha fidget toy">
+  <div class="head">
+    <small>// select all squares with</small>
+    <strong><span id="prompt">solar panels</span><span class="cur">_</span></strong>
+    <small class="dim" id="hint" aria-live="polite">if there are none, click skip</small>
+  </div>
+  <div class="grid" id="grid"></div>
+  <div class="foot">
+    <button class="ico" id="refresh" aria-label="New challenge"><svg width="22" height="22" viewBox="5 5 22 22" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="square"><path d="M22 12.5a7 7 0 1 0 1 6"/><path d="M23 8v5h-5"/></svg></button>
+    <button class="ico" aria-label="Audio (just for looks)"><svg width="22" height="22" viewBox="5 5 22 22"><path d="M9 19v-3a7 7 0 0 1 14 0v3" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="square"/><rect x="8" y="18" width="4" height="6" fill="currentColor"/><rect x="20" y="18" width="4" height="6" fill="currentColor"/></svg></button>
+    <button class="ico" aria-label="Info (just for looks)">i</button>
+    <div style="flex:1"></div>
+    <button class="go" id="go">skip</button>
+  </div>
+</div>
+<script>
+const IMG = 'iss.jpg';
+// Paste a link here to send winners somewhere (your portfolio, GitHub, etc). Leave '' to just start the next round.
+const REDIRECT_URL = '';
+
+// Tiles are numbered 0 1 2 (top row) and 3 4 5 (bottom row).
+const ROUNDS = [
+  { prompt: 'solar panels',  answer: [0, 2, 3, 5] },
+  { prompt: 'radiators',     answer: [4] },
+  { prompt: 'the earth',     answer: [3, 4, 5] },
+  { prompt: 'only the void', answer: [1] },
+];
+const WINS = ['houston, we have a human.','verified. 87% human.','telemetry nominal.','close enough. welcome aboard.','cleared for docking.'];
+const LOSE = '100% bot detected.';
+const HINT = 'if there are none, click skip';
+
+const cap = document.querySelector('.cap'), grid = document.getElementById('grid'), go = document.getElementById('go'),
+      hint = document.getElementById('hint'), promptEl = document.getElementById('prompt');
+let ri = Math.floor(Math.random() * ROUNDS.length), busy = false;
+
+for (let r = 0; r < 2; r++) for (let c = 0; c < 3; c++) {
+  const b = document.createElement('button');
+  b.className = 'tile'; b.setAttribute('aria-pressed','false'); b.setAttribute('aria-label',`Tile ${r*3+c+1}`);
+  b.innerHTML = `<div class="clip" style="--c:${c};--r:${r}"><img src="${IMG}" alt="" draggable="false"></div><span class="chk"><svg width="14" height="14" viewBox="0 0 14 14" fill="none" stroke="#0b1520" stroke-width="2.4" stroke-linecap="square"><path d="M2.5 7.5l3 3 6-6"/></svg></span>`;
+  b.onclick = () => { if (busy) return; const on = b.classList.toggle('on'); b.setAttribute('aria-pressed', on); sync(); };
+  grid.appendChild(b);
+}
+
+const tiles = [...grid.querySelectorAll('.tile')];
+const picked = () => tiles.flatMap((t, i) => t.classList.contains('on') ? [i] : []);
+function sync(){ go.textContent = picked().length ? 'verify' : 'skip'; }
+function show(){ promptEl.textContent = ROUNDS[ri].prompt; hint.textContent = HINT; sync(); }
+function next(){
+  tiles.forEach(t => { t.classList.remove('on'); t.setAttribute('aria-pressed','false'); });
+  ri = (ri + 1 + Math.floor(Math.random() * (ROUNDS.length - 1))) % ROUNDS.length;
+  show();
+}
+function verdict(win){
+  busy = true;
+  cap.classList.add(win ? 'good' : 'bad');
+  hint.textContent = '> ' + (win ? WINS[Math.floor(Math.random() * WINS.length)] : LOSE);
+  setTimeout(() => {
+    if (win && REDIRECT_URL) { window.location.href = REDIRECT_URL; return; }
+    cap.classList.remove('good', 'bad'); busy = false; next();
+  }, 1900);
+}
+go.onclick = () => {
+  if (busy) return;
+  const sel = picked();
+  if (!sel.length) return next();
+  const ans = ROUNDS[ri].answer;
+  verdict(sel.length === ans.length && ans.every(i => sel.includes(i)));
+};
+document.getElementById('refresh').onclick = () => { if (!busy) next(); };
+show();
+</script>
+</body>
+</html>

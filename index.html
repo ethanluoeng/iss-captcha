@@ -8,61 +8,86 @@
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Inconsolata:wght@400;700&display=swap" rel="stylesheet">
 <style>
-:root{--navy0:#0b1520;--navy1:#12263a;--line:#1f4566;--mid:#477ca8;--mid2:#5597d4;--sky:#63aff2;--soft:#9cc6ea;--gap:4px;--ease:cubic-bezier(.4,0,.2,1);--mono:Inconsolata,Consolas,"SF Mono",Menlo,monospace}
+@property --gap{syntax:"<length>";inherits:true;initial-value:5px}
+:root{--navy0:#0b1520;--navy1:#12263a;--line:#1f4566;--mid:#477ca8;--mid2:#5597d4;--sky:#63aff2;--soft:#9cc6ea;--red:#ff6b81;--ease:cubic-bezier(.4,0,.2,1);--mono:Inconsolata,Consolas,"SF Mono",Menlo,monospace}
 *{box-sizing:border-box;margin:0}
-body{min-height:100vh;display:grid;place-items:center;background:#060d14;font-family:var(--mono);color:#fff;padding:16px}
-.cap{width:min(100%,408px);background:var(--navy0);border:1px solid var(--line);border-radius:12px;padding:8px;user-select:none;-webkit-user-select:none}
-.head{position:relative;border-radius:8px;padding:18px 20px 18px 24px;overflow:hidden;background-color:var(--navy1);background-image:linear-gradient(rgba(31,69,102,.55) .6px,transparent .6px),linear-gradient(90deg,rgba(31,69,102,.55) .6px,transparent .6px);background-size:16px 16px}
-.head::before{content:"";position:absolute;left:0;top:0;bottom:0;width:4px;background:var(--sky);border-radius:2px}
-.head small{display:block;font-size:14px;color:var(--sky)}
-.head small.dim{color:var(--soft)}
-.head strong{display:block;font-size:30px;font-weight:700;line-height:1.25;margin:6px 0 4px}
+body{min-height:100vh;display:grid;place-items:center;background:#060d14;font-family:var(--mono);color:#fff;padding:20px}
+.cap{--gap:5px;width:min(100%,540px);background:var(--navy0);border:1px solid var(--line);border-radius:14px;padding:10px;user-select:none;-webkit-user-select:none;transition:--gap .6s var(--ease)}
+.head{position:relative;border-radius:9px;padding:22px 24px 22px 30px;overflow:hidden;background-color:var(--navy1);background-image:linear-gradient(rgba(31,69,102,.55) .6px,transparent .6px),linear-gradient(90deg,rgba(31,69,102,.55) .6px,transparent .6px);background-size:18px 18px}
+.head::before{content:"";position:absolute;left:0;top:0;bottom:0;width:5px;background:var(--sky);border-radius:2px}
+.head small{display:block;font-size:17px;color:var(--sky)}
+.head small.dim{color:var(--soft);transition:color .3s}
+.head strong{display:block;font-size:clamp(28px,7vw,40px);font-weight:700;line-height:1.2;margin:8px 0 6px}
 .cur{color:var(--sky);animation:blink 1.1s steps(2) infinite}
 @keyframes blink{50%{opacity:0}}
-.grid{display:grid;grid-template-columns:repeat(3,1fr);gap:var(--gap);margin-top:8px}
-.tile{position:relative;aspect-ratio:1;border:0;padding:0;background:transparent;cursor:pointer;-webkit-tap-highlight-color:transparent;border-radius:6px}
+.grid{position:relative;display:grid;grid-template-columns:repeat(3,1fr);gap:var(--gap);margin-top:10px}
+.tile{position:relative;aspect-ratio:1;border:0;padding:0;background:transparent;cursor:pointer;-webkit-tap-highlight-color:transparent;border-radius:7px}
 .tile:focus-visible{outline:2px solid var(--sky);outline-offset:2px}
-.clip{position:absolute;inset:0;overflow:hidden;border-radius:6px;transition:transform .42s var(--ease)}
-.clip::after{content:"";position:absolute;inset:0;border-radius:6px;box-shadow:inset 0 0 0 2px var(--sky);opacity:0;transition:opacity .42s var(--ease)}
+.clip{position:absolute;inset:0;overflow:hidden;border-radius:7px;transition:transform .42s var(--ease),border-radius .6s var(--ease)}
+.clip::after{content:"";position:absolute;inset:0;border-radius:inherit;box-shadow:inset 0 0 0 2px var(--sky);opacity:0;transition:opacity .42s var(--ease)}
 .tile.on .clip{transform:scale(.82)}
 .tile.on .clip::after{opacity:1}
 .clip img{position:absolute;width:calc(300% + 2*var(--gap));height:calc(200% + var(--gap));left:calc(var(--c)*(-100% - var(--gap)));top:calc(var(--r)*(-100% - var(--gap)));object-fit:cover;pointer-events:none;max-width:none}
-.chk{position:absolute;top:4px;left:4px;width:22px;height:22px;border-radius:5px;background:var(--sky);display:grid;place-items:center;transform:scale(0);transition:transform .42s var(--ease)}
+.chk{position:absolute;top:5px;left:5px;width:28px;height:28px;border-radius:6px;background:var(--sky);display:grid;place-items:center;transform:scale(0);transition:transform .42s var(--ease)}
 .tile.on .chk{transform:scale(1)}
-.foot{display:flex;align-items:center;gap:8px;margin-top:10px;padding:3px 0 3px 2px}
-.ico{width:32px;height:32px;border:1px solid var(--line);background:none;border-radius:7px;display:grid;place-items:center;cursor:pointer;color:var(--mid);font:700 17px var(--mono);transition:border-color .2s,color .2s}
+.foot{display:flex;align-items:center;gap:10px;margin-top:12px;padding:3px 0 3px 2px}
+.ico{width:42px;height:42px;border:1px solid var(--line);background:none;border-radius:9px;display:grid;place-items:center;cursor:pointer;color:var(--mid);font:700 21px var(--mono);transition:border-color .2s,color .2s}
 .ico:hover{border-color:var(--mid);color:var(--sky)}
-.msg{flex:1;font-size:13px;color:var(--soft);text-align:center;opacity:0;transition:opacity .3s}
-.msg.show{opacity:1}
-.go{border:0;background:var(--mid);color:#fff;font:700 16px var(--mono);letter-spacing:1px;height:36px;padding:0 20px;border-radius:8px;cursor:pointer;min-width:104px;transition:background .2s}
+.go{margin-left:auto;border:0;background:var(--mid);color:#fff;font:700 19px var(--mono);letter-spacing:1px;height:46px;padding:0 24px;border-radius:10px;cursor:pointer;min-width:128px;transition:background .2s}
 .go:hover{background:var(--mid2)}
-.head small.dim{transition:color .3s}
 .cap.good .head small.dim{color:var(--sky)}
-.cap.bad{--sky:#ff6b81;animation:shake .45s cubic-bezier(.36,.07,.19,.97)}
-.cap.bad .head small.dim{color:#ff6b81}
-@keyframes shake{20%,60%{transform:translateX(-5px)}40%,80%{transform:translateX(5px)}}
+.cap.bad{--sky:var(--red);animation:shake .45s cubic-bezier(.36,.07,.19,.97)}
+.cap.bad .head small.dim{color:var(--red)}
+@keyframes shake{20%,60%{transform:translateX(-6px)}40%,80%{transform:translateX(6px)}}
+
+/* winning "uplink" sequence: tiles fuse into one photo, then a terminal readout counts to 100% */
+.cap.loading{--gap:0px}
+.cap.loading .clip{border-radius:0}
+.cap.loading .tile{cursor:default}
+.uplink{position:absolute;inset:0;border-radius:7px;overflow:hidden;display:flex;flex-direction:column;justify-content:flex-end;gap:12px;padding:22px;background:rgba(6,13,20,.72);opacity:0;transition:opacity .5s var(--ease) .35s;pointer-events:none}
+.cap.loading .uplink{opacity:1;pointer-events:auto}
+.uplink::before{content:"";position:absolute;left:0;right:0;top:-30%;height:30%;background:linear-gradient(transparent,rgba(99,175,242,.22),transparent);animation:scan 1.5s linear infinite}
+.uplink::after{content:"";position:absolute;inset:0;background:repeating-linear-gradient(transparent 0 3px,rgba(0,0,0,.18) 3px 4px);pointer-events:none}
+@keyframes scan{to{top:100%}}
+.log{position:relative;display:grid;gap:6px;font-size:17px;color:var(--soft)}
+.log div{opacity:0;transform:translateY(4px);transition:opacity .3s,transform .3s}
+.log div.in{opacity:1;transform:none}
+.log b{color:var(--sky);font-weight:700}
+.bar{position:relative;display:flex;align-items:center;gap:12px;font-size:17px;font-weight:700;color:var(--sky)}
+.track{flex:1;height:10px;border:1px solid var(--mid);border-radius:3px;padding:1px}
+.fill{height:100%;width:0;border-radius:1px;background:repeating-linear-gradient(90deg,var(--sky) 0 8px,transparent 8px 10px)}
+.pct{min-width:4ch;text-align:right;font-variant-numeric:tabular-nums}
+@media (prefers-reduced-motion:reduce){.uplink::before{animation:none;opacity:0}}
 </style>
 </head>
 <body>
-<div class="cap" role="group" aria-label="ISS captcha fidget toy">
+<div class="cap" role="group" aria-label="ISS captcha">
   <div class="head">
     <small>// select all squares with</small>
     <strong><span id="prompt">solar panels</span><span class="cur">_</span></strong>
     <small class="dim" id="hint" aria-live="polite">if there are none, click skip</small>
   </div>
-  <div class="grid" id="grid"></div>
+  <div class="grid" id="grid">
+    <div class="uplink" id="uplink" aria-live="polite">
+      <div class="log" id="log"></div>
+      <div class="bar"><div class="track"><div class="fill" id="fill"></div></div><span class="pct" id="pct">0%</span></div>
+    </div>
+  </div>
   <div class="foot">
-    <button class="ico" id="refresh" aria-label="New challenge"><svg width="22" height="22" viewBox="5 5 22 22" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="square"><path d="M22 12.5a7 7 0 1 0 1 6"/><path d="M23 8v5h-5"/></svg></button>
-    <button class="ico" aria-label="Audio (just for looks)"><svg width="22" height="22" viewBox="5 5 22 22"><path d="M9 19v-3a7 7 0 0 1 14 0v3" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="square"/><rect x="8" y="18" width="4" height="6" fill="currentColor"/><rect x="20" y="18" width="4" height="6" fill="currentColor"/></svg></button>
+    <button class="ico" id="refresh" aria-label="New challenge"><svg width="26" height="26" viewBox="5 5 22 22" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="square"><path d="M22 12.5a7 7 0 1 0 1 6"/><path d="M23 8v5h-5"/></svg></button>
+    <button class="ico" aria-label="Audio (just for looks)"><svg width="26" height="26" viewBox="5 5 22 22"><path d="M9 19v-3a7 7 0 0 1 14 0v3" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="square"/><rect x="8" y="18" width="4" height="6" fill="currentColor"/><rect x="20" y="18" width="4" height="6" fill="currentColor"/></svg></button>
     <button class="ico" aria-label="Info (just for looks)">i</button>
-    <div style="flex:1"></div>
     <button class="go" id="go">skip</button>
   </div>
 </div>
 <script>
 const IMG = 'iss.jpg';
-// Paste a link here to send winners somewhere (your portfolio, GitHub, etc). Leave '' to just start the next round.
-const REDIRECT_URL = '';
+
+// ▼▼▼ PASTE YOUR LINK HERE (your portfolio, GitHub profile, etc). Winners go here after the loading sequence.
+const REDIRECT_URL = 'https://github.com/ethanluoeng';
+// ▲▲▲ Leave it '' and winners just get a new round after the sequence.
+
+const LOADING_MS = 3000;
 
 // Tiles are numbered 0 1 2 (top row) and 3 4 5 (bottom row).
 const ROUNDS = [
@@ -74,37 +99,69 @@ const ROUNDS = [
 const WINS = ['houston, we have a human.','verified. 87% human.','telemetry nominal.','close enough. welcome aboard.','cleared for docking.'];
 const LOSE = '100% bot detected.';
 const HINT = 'if there are none, click skip';
+const STEPS = [
+  [0.00, 'human verified <b>............... ok</b>'],
+  [0.30, 'welcome to my github <b>......... ok</b>'],
+  [0.60, 'redirecting to ethanluoeng <b>... ok</b>'],
+  [0.88, REDIRECT_URL ? 'redirecting <b>&gt;&gt;&gt;</b>' : 'redirect complete <b>&gt;&gt;&gt;</b>'],
+];
 
-const cap = document.querySelector('.cap'), grid = document.getElementById('grid'), go = document.getElementById('go'),
-      hint = document.getElementById('hint'), promptEl = document.getElementById('prompt');
+const $ = id => document.getElementById(id);
+const cap = document.querySelector('.cap'), grid = $('grid'), go = $('go'), hint = $('hint'), promptEl = $('prompt'),
+      logEl = $('log'), fill = $('fill'), pct = $('pct');
 let ri = Math.floor(Math.random() * ROUNDS.length), busy = false;
 
 for (let r = 0; r < 2; r++) for (let c = 0; c < 3; c++) {
   const b = document.createElement('button');
   b.className = 'tile'; b.setAttribute('aria-pressed','false'); b.setAttribute('aria-label',`Tile ${r*3+c+1}`);
-  b.innerHTML = `<div class="clip" style="--c:${c};--r:${r}"><img src="${IMG}" alt="" draggable="false"></div><span class="chk"><svg width="14" height="14" viewBox="0 0 14 14" fill="none" stroke="#0b1520" stroke-width="2.4" stroke-linecap="square"><path d="M2.5 7.5l3 3 6-6"/></svg></span>`;
+  b.innerHTML = `<div class="clip" style="--c:${c};--r:${r}"><img src="${IMG}" alt="" draggable="false"></div><span class="chk"><svg width="17" height="17" viewBox="0 0 14 14" fill="none" stroke="#0b1520" stroke-width="2.4" stroke-linecap="square"><path d="M2.5 7.5l3 3 6-6"/></svg></span>`;
   b.onclick = () => { if (busy) return; const on = b.classList.toggle('on'); b.setAttribute('aria-pressed', on); sync(); };
-  grid.appendChild(b);
+  grid.insertBefore(b, $('uplink'));
 }
 
 const tiles = [...grid.querySelectorAll('.tile')];
 const picked = () => tiles.flatMap((t, i) => t.classList.contains('on') ? [i] : []);
+const clearTiles = () => tiles.forEach(t => { t.classList.remove('on'); t.setAttribute('aria-pressed','false'); });
 function sync(){ go.textContent = picked().length ? 'verify' : 'skip'; }
 function show(){ promptEl.textContent = ROUNDS[ri].prompt; hint.textContent = HINT; sync(); }
 function next(){
-  tiles.forEach(t => { t.classList.remove('on'); t.setAttribute('aria-pressed','false'); });
+  clearTiles();
   ri = (ri + 1 + Math.floor(Math.random() * (ROUNDS.length - 1))) % ROUNDS.length;
   show();
 }
+
+function uplink(done){
+  logEl.innerHTML = STEPS.map(([, t]) => `<div>&gt; ${t}</div>`).join('');
+  const lines = [...logEl.children];
+  fill.style.width = '0%'; pct.textContent = '0%';
+  clearTiles();
+  go.textContent = 'uplink';
+  cap.classList.add('loading');
+  const t0 = performance.now();
+  (function frame(now){
+    const p = Math.min(1, Math.max(0, (now - t0) / LOADING_MS));
+    const eased = p < .5 ? 2*p*p : 1 - Math.pow(-2*p + 2, 2) / 2;
+    fill.style.width = (eased * 100).toFixed(1) + '%';
+    pct.textContent = Math.round(eased * 100) + '%';
+    STEPS.forEach(([at], i) => { if (p >= at) lines[i].classList.add('in'); });
+    p < 1 ? requestAnimationFrame(frame) : setTimeout(done, 250);
+  })(t0);
+}
+
 function verdict(win){
   busy = true;
   cap.classList.add(win ? 'good' : 'bad');
   hint.textContent = '> ' + (win ? WINS[Math.floor(Math.random() * WINS.length)] : LOSE);
-  setTimeout(() => {
-    if (win && REDIRECT_URL) { window.location.href = REDIRECT_URL; return; }
-    cap.classList.remove('good', 'bad'); busy = false; next();
-  }, 1900);
+  if (!win) {
+    setTimeout(() => { cap.classList.remove('bad'); busy = false; next(); }, 1900);
+    return;
+  }
+  setTimeout(() => uplink(() => {
+    if (REDIRECT_URL) { window.location.href = REDIRECT_URL; return; }
+    cap.classList.remove('good', 'loading'); busy = false; next();
+  }), 700);
 }
+
 go.onclick = () => {
   if (busy) return;
   const sel = picked();
@@ -112,7 +169,7 @@ go.onclick = () => {
   const ans = ROUNDS[ri].answer;
   verdict(sel.length === ans.length && ans.every(i => sel.includes(i)));
 };
-document.getElementById('refresh').onclick = () => { if (!busy) next(); };
+$('refresh').onclick = () => { if (!busy) next(); };
 show();
 </script>
 </body>
